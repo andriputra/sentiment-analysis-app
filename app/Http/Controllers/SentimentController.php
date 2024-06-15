@@ -27,8 +27,12 @@ class SentimentController extends Controller
             return response()->json(['error' => 'File upload failed'], 500);
         }
 
+        // Escape shell arguments to handle spaces and special characters
+        $escapedFilePath = escapeshellarg(storage_path('app/' . $filePath));
+        $escapedScriptPath = escapeshellarg(base_path('process_sentiment.py'));
+        $command = "python $escapedScriptPath $escapedFilePath";
+
         // Panggil skrip Python untuk memproses file
-        $command = escapeshellcmd("python " . base_path('process_sentiment.py') . " " . storage_path('app/' . $filePath));
         $output = shell_exec($command . ' 2>&1');
 
         // Debug: Cek output dari skrip Python
@@ -45,10 +49,7 @@ class SentimentController extends Controller
         }
 
         // Pastikan $results memiliki struktur yang benar sebelum dikirimkan ke view
-        if (!is_array($results) || 
-            !isset($results['precision_positive'], $results['recall_positive'], $results['f1_score_positive'], 
-                    $results['precision_negative'], $results['recall_negative'], $results['f1_score_negative'], 
-                    $results['accuracy'])) {
+        if (!is_array($results) || !isset($results['overall'])) {
             return response()->json(['error' => 'Invalid format in results'], 500);
         }
 

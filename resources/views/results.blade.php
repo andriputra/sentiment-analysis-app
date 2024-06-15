@@ -7,8 +7,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Sentiment Analysis Results</h1>
+    <div class="container mt-4">
+        <h3 class="mb-3">Sentiment Analysis Results</h3>
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
@@ -30,24 +30,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($results as $split => $metrics)
-                        @if (is_array($metrics) && isset($metrics['pos'], $metrics['neg'], $metrics['accuracy']))
-                            <tr>
-                                <td>{{ $split }}</td>
-                                <td>{{ isset($metrics['pos']['precision']) ? number_format($metrics['pos']['precision'], 2) : '-' }}</td>
-                                <td>{{ isset($metrics['pos']['recall']) ? number_format($metrics['pos']['recall'], 2) : '-' }}</td>
-                                <td>{{ isset($metrics['pos']['f1']) ? number_format($metrics['pos']['f1'], 2) : '-' }}</td>
-                                <td>{{ isset($metrics['neg']['precision']) ? number_format($metrics['neg']['precision'], 2) : '-' }}</td>
-                                <td>{{ isset($metrics['neg']['recall']) ? number_format($metrics['neg']['recall'], 2) : '-' }}</td>
-                                <td>{{ isset($metrics['neg']['f1']) ? number_format($metrics['neg']['f1'], 2) : '-' }}</td>
-                                <td>{{ number_format($metrics['accuracy'], 4) }}</td>
-                            </tr>
-                        @else
-                            <tr>
-                                <td colspan="8">Data tidak valid untuk split: {{ $split }}</td>
-                            </tr>
-                        @endif
-                    @endforeach
+                    <tr>
+                        <td>Overall</td>
+                        <td>{{ isset($results['overall']['pos']['precision']) ? number_format($results['overall']['pos']['precision'], 2) : '-' }}</td>
+                        <td>{{ isset($results['overall']['pos']['recall']) ? number_format($results['overall']['pos']['recall'], 2) : '-' }}</td>
+                        <td>{{ isset($results['overall']['pos']['f1']) ? number_format($results['overall']['pos']['f1'], 2) : '-' }}</td>
+                        <td>{{ isset($results['overall']['neg']['precision']) ? number_format($results['overall']['neg']['precision'], 2) : '-' }}</td>
+                        <td>{{ isset($results['overall']['neg']['recall']) ? number_format($results['overall']['neg']['recall'], 2) : '-' }}</td>
+                        <td>{{ isset($results['overall']['neg']['f1']) ? number_format($results['overall']['neg']['f1'], 2) : '-' }}</td>
+                        <td>{{ number_format($results['overall']['accuracy'], 4) }}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

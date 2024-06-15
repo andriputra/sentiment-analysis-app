@@ -14,12 +14,6 @@ def main():
     # Membaca file CSV
     df = pd.read_csv(csv_file)
 
-    # Menangani nilai NaN di kolom clean_twitter_text
-    df['clean_twitter_text'] = df['clean_twitter_text'].fillna('')  # Ganti NaN dengan string kosong
-    
-    # Filter out non-string values from clean_twitter_text column
-    df = df[df['clean_twitter_text'].apply(lambda x: isinstance(x, str))]
-
     # Pastikan kolom yang digunakan sesuai dengan file CSV Anda
     if 'clean_twitter_text' not in df.columns:
         print("Error: Kolom 'clean_twitter_text' tidak ditemukan dalam file CSV")
@@ -29,8 +23,8 @@ def main():
     analyzer = SentimentIntensityAnalyzer()
 
     # Menganalisis sentimen untuk setiap teks
-    df['scores'] = df['clean_twitter_text'].apply(lambda text: analyzer.polarity_scores(text))
-    df['compound'] = df['scores'].apply(lambda score_dict: score_dict['compound'])
+    df['scores'] = df['clean_twitter_text'].apply(lambda text: analyzer.polarity_scores(text) if isinstance(text, str) else {})
+    df['compound'] = df['scores'].apply(lambda score_dict: score_dict.get('compound', 0))
 
     def get_sentiment_label(score):
         if score >= 0.05:
@@ -42,9 +36,7 @@ def main():
 
     df['sentiment'] = df['compound'].apply(get_sentiment_label)
 
-    # Misalnya, label kebenaran disimpan di kolom 'label'
-    # y_true = df['label']
-    # Sesuaikan jika Anda memiliki kolom label yang berbeda
+    # Menghitung metrik
     y_true = df['sentiment']  # Menggunakan sentimen aktual jika tidak ada kolom label
     y_pred = df['sentiment']
 
@@ -52,13 +44,19 @@ def main():
     accuracy = accuracy_score(y_true, y_pred)
 
     results = {
-        'precision_positive': precision[0],
-        'recall_positive': recall[0],
-        'f1_score_positive': f1_score[0],
-        'precision_negative': precision[1],
-        'recall_negative': recall[1],
-        'f1_score_negative': f1_score[1],
-        'accuracy': accuracy
+        'overall': {
+            'pos': {
+                'precision': precision[0],
+                'recall': recall[0],
+                'f1': f1_score[0]
+            },
+            'neg': {
+                'precision': precision[1],
+                'recall': recall[1],
+                'f1': f1_score[1]
+            },
+            'accuracy': accuracy
+        }
     }
 
     print(json.dumps(results))
