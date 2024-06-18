@@ -1,13 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SentimentController;
 use App\Http\Controllers\FeatureExtractionController;
 use App\Http\Controllers\ClassificationController;
 
+Route::get('/', [HomeController::class, 'index']);
 Route::get('/upload', [SentimentController::class, 'showUploadForm']);
 Route::post('/upload', [SentimentController::class, 'handleUpload']);
-
 Route::get('/download/{filename}', function ($filename) {
     $filePath = storage_path('app/uploads/' . $filename);
 

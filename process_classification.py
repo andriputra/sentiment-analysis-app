@@ -31,7 +31,7 @@ def main():
         print(f"Error: {str(e)} column not found in the CSV file.")
         return
 
-    # Contoh menggunakan Bag of Words (BoW) untuk ekstraksi fitur
+    # Menggunakan Bag of Words (BoW) untuk ekstraksi fitur
     vectorizer = CountVectorizer()
     X = vectorizer.fit_transform(texts)
 

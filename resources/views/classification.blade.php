@@ -21,7 +21,7 @@
                 @csrf
                 <div class="input-group">
                     <input type="file" name="csv_file" accept=".csv" class="form-control">
-                    <button type="submit" class="btn btn-primary">Data Classification</button>
+                    <button type="submit" class="btn btn-success">Data Classification</button>
                 </div>
             </form>
             <div class="loader mt-3" id="loader"></div>

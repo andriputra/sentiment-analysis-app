@@ -13,27 +13,7 @@
         <div class="box-result">
             <h3 class="mb-3 text-center">Result Feature Extraction</h3>
             <div class="button-action text-end mt-3">
-                <a href="/upload-feature-extraction" class="btn btn-sm btn-warning">Back To Main Menu</a>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Features</th>
-                            <th>Labels</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($results['features'] as $index => $feature)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ implode(', ', $feature) }}</td>
-                            <td>{{ $results['labels'][$index] }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <a href="/" class="btn btn-sm btn-warning">Back To Main Menu</a>
             </div>
             <div class="mt-4">
                 <p>Total Samples: <b>{{ $results_feature_extraction['overall']['num_samples'] }}</b></p>

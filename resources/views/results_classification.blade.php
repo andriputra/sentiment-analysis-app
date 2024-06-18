@@ -38,6 +38,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="button-action mt-3 text-end">
+                    <a href="/" class="btn btn-sm btn-warning">Back To Main Menu</a>
+                </div>
             </div>
         </div>
     </div>

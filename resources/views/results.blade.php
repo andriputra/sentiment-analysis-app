@@ -35,12 +35,12 @@
             <div class="mt-4">
                 <canvas id="sentimentChart" style="height: 300px; width: 100%;"></canvas> <!-- Canvas for Chart.js -->
             </div>
-            <div class="button-action text-end mt-3">
-                <a href="/upload" class="btn btn-sm btn-warning">Back To Main Menu</a>
+            <div class="button-action mt-3 d-flex justify-content-between">
+                @if(isset($downloadUrl))
+                    <a href="{{ $downloadUrl }}" class="btn btn-sm btn-success">Download CSV with Sentiment Labels</a>
+                @endif
+                <a href="/" class="btn btn-sm btn-warning">Back To Main Menu</a>
             </div>
-            @if(isset($downloadUrl))
-                <p><a href="{{ $downloadUrl }}">Download CSV with Sentiment Labels</a></p>
-            @endif
         </div>        
     </div>
 

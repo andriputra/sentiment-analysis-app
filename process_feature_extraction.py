@@ -22,8 +22,8 @@ def main():
 
     # Ambil kolom teks (tokenize) dan label dari CSV
     try:
-        texts = df['tokenize'].astype(str).tolist()  # Menggunakan kolom 'tokenize'
-        labels = df['clean_twitter_text'].tolist() 
+        texts = df['tweet_english'].astype(str).tolist()  # Menggunakan kolom 'tokenize'
+        labels = df['sentiment'].tolist() 
     except KeyError as e:
         print(f"Error: {str(e)} column not found in the CSV file.")
         return
@@ -36,8 +36,8 @@ def main():
     features = X.toarray().tolist()
 
     results = {
-        'features': features,
-        'sentiment': labels,
+        # 'features': features,
+        # 'sentiment': labels,
         'overall': {
             'num_samples': len(texts),
             'num_features': len(vectorizer.get_feature_names_out())
