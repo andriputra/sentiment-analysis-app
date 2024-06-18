@@ -1,65 +1,71 @@
 import pandas as pd
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from sklearn.metrics import precision_recall_fscore_support, accuracy_score
 import json
 import sys
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python process_sentiment.py <csv_file>")
-        sys.exit(1)
+    try:
+        if len(sys.argv) != 2:
+            print("Usage: python process_sentiment.py <csv_file>")
+            sys.exit(1)
 
-    csv_file = sys.argv[1]
+        csv_file = sys.argv[1]
+        nrows_to_read = 4825  # Jumlah baris yang ingin dibaca
 
-    # Membaca file CSV
-    df = pd.read_csv(csv_file)
+        analyzer = SentimentIntensityAnalyzer()
 
-    # Pastikan kolom yang digunakan sesuai dengan file CSV Anda
-    if 'clean_twitter_text' not in df.columns:
-        print("Error: Kolom 'clean_twitter_text' tidak ditemukan dalam file CSV")
-        print("Kolom yang tersedia:", df.columns)
-        sys.exit(1)
+        # Fungsi untuk mendapatkan label sentimen
+        def get_sentiment_label(score):
+            if score >= 0.05:
+                return 'positive'
+            elif score <= -0.05:
+                return 'negative'
+            else:
+                return 'neutral'
 
-    analyzer = SentimentIntensityAnalyzer()
+        # Membaca hanya sejumlah baris tertentu dari file CSV
+        df = pd.read_csv(csv_file, nrows=nrows_to_read)
 
-    # Menganalisis sentimen untuk setiap teks
-    df['scores'] = df['clean_twitter_text'].apply(lambda text: analyzer.polarity_scores(text) if isinstance(text, str) else {})
-    df['compound'] = df['scores'].apply(lambda score_dict: score_dict.get('compound', 0))
+        # Pastikan kolom yang digunakan sesuai dengan file CSV Anda
+        if 'tweet_english' not in df.columns:
+            raise ValueError("Kolom 'tweet_english' tidak ditemukan dalam file CSV")
 
-    def get_sentiment_label(score):
-        if score >= 0.05:
-            return 'positive'
-        elif score <= -0.05:
-            return 'negative'
-        else:
-            return 'neutral'
+        # Menganalisis sentimen untuk setiap teks
+        df['scores'] = df['tweet_english'].apply(lambda text: analyzer.polarity_scores(str(text))['compound'])
 
-    df['sentiment'] = df['compound'].apply(get_sentiment_label)
+        # Menentukan sentimen berdasarkan nilai compound
+        df['sentiment'] = df['scores'].apply(get_sentiment_label)
 
-    # Menghitung metrik
-    y_true = df['sentiment']  # Menggunakan sentimen aktual jika tidak ada kolom label
-    y_pred = df['sentiment']
+        output_csv_file = csv_file.replace('.csv', '_with_sentiment.csv')
+        df.to_csv(output_csv_file, index=False)
 
-    precision, recall, f1_score, _ = precision_recall_fscore_support(y_true, y_pred, average=None, labels=['positive', 'negative'])
-    accuracy = accuracy_score(y_true, y_pred)
+        # Hitung jumlah sentimen positif, negatif, dan netral
+        sentiment_counts = df['sentiment'].value_counts()
 
-    results = {
-        'overall': {
-            'pos': {
-                'precision': precision[0],
-                'recall': recall[0],
-                'f1': f1_score[0]
-            },
-            'neg': {
-                'precision': precision[1],
-                'recall': recall[1],
-                'f1': f1_score[1]
-            },
-            'accuracy': accuracy
+        # Hitung total keseluruhan
+        total_tweets = len(df)
+
+        # Format hasil sesuai dengan permintaan
+        results = {
+            'overall': {
+                'pos': {
+                    'count': int(sentiment_counts.get('positive', 0))
+                },
+                'neg': {
+                    'count': int(sentiment_counts.get('negative', 0))
+                },
+                'neutral': {
+                    'count': int(sentiment_counts.get('neutral', 0))
+                },
+                'total': total_tweets
+            }
         }
-    }
 
-    print(json.dumps(results))
+        print(json.dumps(results, indent=4))
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

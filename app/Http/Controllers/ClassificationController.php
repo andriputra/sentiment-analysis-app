@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class SentimentController extends Controller
+class ClassificationController extends Controller
 {
-    public function showUploadForm()
+    public function showUploadClassificationForm()
     {
-        return view('upload');
+        return view('classification');
     }
 
-    public function handleUpload(Request $request)
+    public function handleUploadClassification(Request $request)
     {
         // Validasi file yang diunggah
         $request->validate([
@@ -29,7 +29,7 @@ class SentimentController extends Controller
 
         // Escape shell arguments to handle spaces and special characters
         $escapedFilePath = escapeshellarg(storage_path('app/' . $filePath));
-        $escapedScriptPath = escapeshellarg(base_path('process_sentiment.py'));
+        $escapedScriptPath = escapeshellarg(base_path('process_classification.py'));
         $command = "python $escapedScriptPath $escapedFilePath";
 
         // Panggil skrip Python untuk memproses file
@@ -41,7 +41,7 @@ class SentimentController extends Controller
         }
 
         // Decode hasil dari skrip Python
-        $results = json_decode($output, true);
+        $results_classification = json_decode($output, true);
 
         // Debug: Cek apakah decoding berhasil
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -49,17 +49,10 @@ class SentimentController extends Controller
         }
 
         // Pastikan $results memiliki struktur yang benar sebelum dikirimkan ke view
-        if (!is_array($results) || !isset($results['overall'])) {
-            return response()->json(['error' => 'Invalid format in results', 'results' => $results], 500);
+        if (!is_array($results_classification) || !isset($results_classification['report'])) {
+            return response()->json(['error' => 'Invalid format in results', 'results_classification' => $results_classification], 500);
         }
 
-        // File CSV yang telah ditambahkan label sentimen
-        $csvFilePathWithSentiment = str_replace('.csv', '_with_sentiment.csv', $filePath);
-
-        // Buat URL untuk mengunduh file
-        $downloadUrl = route('download', ['filename' => basename($csvFilePathWithSentiment)]);
-
-        return view('results', ['results' => $results, 'downloadUrl' => $downloadUrl]);
+        return view('results_classification', ['results_classification' => $results_classification]);
     }
-
 }

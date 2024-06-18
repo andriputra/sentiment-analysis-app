@@ -17,11 +17,11 @@
                 <h5>Periode 2024-2029</h5>
             </div>
             <hr>
-            <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+            <form id="upload-form" action="{{ url('/upload-feature-extraction') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="input-group">
                     <input type="file" name="csv_file" accept=".csv" class="form-control">
-                    <button type="submit" class="btn btn-primary">Data Processing</button>
+                    <button type="submit" class="btn btn-primary">Data Fetaure Extraction</button>
                 </div>
             </form>
             <div class="loader mt-3" id="loader"></div>

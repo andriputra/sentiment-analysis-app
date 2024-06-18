@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage; // Tambahkan ini
+use Illuminate\Support\Facades\File;    // Jika Anda menggunakan File facade juga
 
-class SentimentController extends Controller
+class FeatureExtractionController extends Controller
 {
-    public function showUploadForm()
+    public function showUploadFeatureExtractionForm()
     {
-        return view('upload');
+        return view('feature-extraction');
     }
 
-    public function handleUpload(Request $request)
+    public function handleUploadFeatureExtraction(Request $request)
     {
         // Validasi file yang diunggah
         $request->validate([
@@ -29,7 +30,7 @@ class SentimentController extends Controller
 
         // Escape shell arguments to handle spaces and special characters
         $escapedFilePath = escapeshellarg(storage_path('app/' . $filePath));
-        $escapedScriptPath = escapeshellarg(base_path('process_sentiment.py'));
+        $escapedScriptPath = escapeshellarg(base_path('process_feature_extraction.py'));
         $command = "python $escapedScriptPath $escapedFilePath";
 
         // Panggil skrip Python untuk memproses file
@@ -41,7 +42,7 @@ class SentimentController extends Controller
         }
 
         // Decode hasil dari skrip Python
-        $results = json_decode($output, true);
+        $results_feature_extraction = json_decode($output, true);
 
         // Debug: Cek apakah decoding berhasil
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -49,17 +50,10 @@ class SentimentController extends Controller
         }
 
         // Pastikan $results memiliki struktur yang benar sebelum dikirimkan ke view
-        if (!is_array($results) || !isset($results['overall'])) {
-            return response()->json(['error' => 'Invalid format in results', 'results' => $results], 500);
+        if (!is_array($results_feature_extraction) || !isset($results_feature_extraction['overall'])) {
+            return response()->json(['error' => 'Invalid format in results', 'results_feature_extraction' => $results_feature_extraction], 500);
         }
 
-        // File CSV yang telah ditambahkan label sentimen
-        $csvFilePathWithSentiment = str_replace('.csv', '_with_sentiment.csv', $filePath);
-
-        // Buat URL untuk mengunduh file
-        $downloadUrl = route('download', ['filename' => basename($csvFilePathWithSentiment)]);
-
-        return view('results', ['results' => $results, 'downloadUrl' => $downloadUrl]);
+        return view('results_feature_extraction', ['results_feature_extraction' => $results_feature_extraction]);
     }
-
 }

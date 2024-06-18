@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="assets/style/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script> <!-- Include Chart.js -->
 </head>
 <body>
     <div class="container mt-4">
@@ -15,40 +16,70 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Opsi Dataset</th>
-                            <th colspan="3">Tweet Positif</th>
-                            <th colspan="3">Tweet Negatif</th>
-                            <th>Akurasi</th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th>Presisi</th>
-                            <th>Recall</th>
-                            <th>F1-Score</th>
-                            <th>Presisi</th>
-                            <th>Recall</th>
-                            <th>F1-Score</th>
-                            <th></th>
+                            <th>Tweet Positif</th>
+                            <th>Tweet Netral</th>
+                            <th>Tweet Negatif</th>
+                            <th>Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Overall</td>
-                            <td>{{ isset($results['overall']['pos']['precision']) ? number_format($results['overall']['pos']['precision'], 2) : '-' }}</td>
-                            <td>{{ isset($results['overall']['pos']['recall']) ? number_format($results['overall']['pos']['recall'], 2) : '-' }}</td>
-                            <td>{{ isset($results['overall']['pos']['f1']) ? number_format($results['overall']['pos']['f1'], 2) : '-' }}</td>
-                            <td>{{ isset($results['overall']['neg']['precision']) ? number_format($results['overall']['neg']['precision'], 2) : '-' }}</td>
-                            <td>{{ isset($results['overall']['neg']['recall']) ? number_format($results['overall']['neg']['recall'], 2) : '-' }}</td>
-                            <td>{{ isset($results['overall']['neg']['f1']) ? number_format($results['overall']['neg']['f1'], 2) : '-' }}</td>
-                            <td>{{ number_format($results['overall']['accuracy'], 4) }}</td>
+                            <td>{{$results['overall']['pos']['count']}}</td>
+                            <td>{{$results['overall']['neutral']['count']}}</td>
+                            <td>{{$results['overall']['neg']['count']}}</td>
+                            <td>{{$results['overall']['total']}}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="button-action text-end">
-                <a href="/upload" class="btn btn-sm btn-warning">Back To Upload</a>
+            <div class="mt-4">
+                <canvas id="sentimentChart" style="height: 300px; width: 100%;"></canvas> <!-- Canvas for Chart.js -->
             </div>
+            <div class="button-action text-end mt-3">
+                <a href="/upload" class="btn btn-sm btn-warning">Back To Main Menu</a>
+            </div>
+            @if(isset($downloadUrl))
+                <p><a href="{{ $downloadUrl }}">Download CSV with Sentiment Labels</a></p>
+            @endif
         </div>        
     </div>
+
+    <script>
+        // Ambil data sentimen dari PHP/Blade
+        const positiveCount = {{$results['overall']['pos']['count']}};
+        const neutralCount = {{$results['overall']['neutral']['count']}};
+        const negativeCount = {{$results['overall']['neg']['count']}};
+
+        // Inisialisasi Chart.js
+        var ctx = document.getElementById('sentimentChart').getContext('2d');
+        var sentimentChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Positif', 'Netral', 'Negatif'],
+                datasets: [{
+                    label: 'Jumlah Tweet',
+                    data: [positiveCount, neutralCount, negativeCount],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.5)',  // Warna untuk positif
+                        'rgba(54, 162, 235, 0.5)',  // Warna untuk netral
+                        'rgba(255, 99, 132, 0.5)'   // Warna untuk negatif
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
