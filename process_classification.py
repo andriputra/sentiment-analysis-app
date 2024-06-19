@@ -4,7 +4,9 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, accuracy_score
+from imblearn.over_sampling import SMOTE
 import json
+from collections import Counter
 
 def main():
     if len(sys.argv) != 2:
@@ -35,8 +37,18 @@ def main():
     vectorizer = CountVectorizer()
     X = vectorizer.fit_transform(texts)
 
+    # Distribusi label sebelum SMOTE
+    label_distribution_before = dict(Counter(labels))
+
+    # Oversampling menggunakan SMOTE
+    smote = SMOTE(random_state=42)
+    X_resampled, y_resampled = smote.fit_resample(X, labels)
+
+    # Distribusi label setelah SMOTE
+    label_distribution_after = dict(Counter(y_resampled))
+
     # Bagi data menjadi set pelatihan dan pengujian
-    X_train, X_test, y_train, y_test = train_test_split(X, labels, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.2, random_state=42)
 
     # Buat dan latih model Logistic Regression
     model = LogisticRegression(max_iter=1000)
@@ -51,7 +63,9 @@ def main():
 
     results = {
         'accuracy': accuracy,
-        'report': report
+        'report': report,
+        'label_distribution_before': label_distribution_before,
+        'label_distribution_after': label_distribution_after
     }
 
     # Print hasil sebagai JSON

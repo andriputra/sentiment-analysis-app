@@ -18,9 +18,9 @@
             </div>
             <hr>
             <div class="box-action d-flex justify-content-center gap-3">
-                <a href="/upload" class="btn btn-md btn-primary" id="button-1">Data Processing</a>
-                <a href="/upload-feature-extraction" class="btn btn-md btn-warning" id="button-2">Feature Extraction</a>
-                <a href="/upload-data-classification" class="btn btn-md btn-success" id="button-3">Classification</a>
+                <button class="btn btn-md btn-primary" id="button-1">Data Processing</button>
+                <button class="btn btn-md btn-warning" id="button-2" disabled>Feature Extraction</button>
+                <button class="btn btn-md btn-success" id="button-3" disabled>Classification</button>
             </div>
         </div>
     </div>
@@ -42,5 +42,69 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function(){
+            $("#button-1").click(function(){
+                $.ajax({
+                    url: '/upload',
+                    type: 'GET',
+                    success: function(response) {
+                        // Proses berhasil, aktifkan button-2
+                        $("#button-2").prop("disabled", false);
+                        window.open("/upload", "_blank");
+                    },
+                    error: function() {
+                        // Tampilkan modal jika ada error
+                        showWarningModal("Terjadi kesalahan pada proses Data Processing!");
+                    }
+                });
+            });
+
+            $("#button-2").click(function(){
+                if ($(this).prop("disabled")) {
+                    showWarningModal("Data Processing belum diproses!");
+                } else {
+                    $.ajax({
+                        url: '/upload-feature-extraction',
+                        type: 'GET',
+                        success: function(response) {
+                            // Proses berhasil, aktifkan button-3
+                            $("#button-3").prop("disabled", false);
+                            window.open("/upload-feature-extraction", "_blank");
+                        },
+                        error: function() {
+                            // Tampilkan modal jika ada error
+                            showWarningModal("Terjadi kesalahan pada proses Feature Extraction!");
+                        }
+                    });
+                }
+            });
+
+            $("#button-3").click(function(){
+                if ($(this).prop("disabled")) {
+                    showWarningModal("Feature Extraction belum diproses!");
+                } else {
+                    $.ajax({
+                        url: '/upload-data-classification',
+                        type: 'GET',
+                        success: function(response) {
+                            // Proses berhasil, arahkan ke URL
+                            window.open("/upload-feature-classification", "_blank");
+                        },
+                        error: function() {
+                            // Tampilkan modal jika ada error
+                            showWarningModal("Terjadi kesalahan pada proses Classification!");
+                        }
+                    });
+                }
+            });
+
+            function showWarningModal(message) {
+                $("#modal-message").text(message);
+                $("#myModal").modal('show');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -38,6 +38,28 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="box-result-diagram d-flex gap-4 justify-content-evenly" style="border: 1px solid #d1d1d1; padding: 10px 10px 0px; border-radius: 10px;">
+                    <div class="item-box">
+                        <h6>Sentiment Distribution Before Oversampling:</h6>
+                        <ul>
+                            @foreach($results_classification['label_distribution_before'] as $label => $count)
+                                @if($label !== 'neutral')
+                                <li>{{ $label }}: {{ $count }}</li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </div>
+                    <div class="item-box">
+                        <h6>Sentiment Distribution After Oversampling:</h6>
+                        <ul>
+                            @foreach($results_classification['label_distribution_after'] as $label => $count)
+                                @if($label !== 'neutral')
+                                <li>{{ $label }}: {{ $count }}</li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
                 <div class="button-action mt-3 text-end">
                     <a href="/" class="btn btn-sm btn-warning">Back To Main Menu</a>
                 </div>
