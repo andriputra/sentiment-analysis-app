@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Results</title>
+    <title>Results Feature Extraction</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="assets/style/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -11,6 +11,37 @@
 <body>
     <div class="container mt-4">
         <div class="box-result">
+        <div class="table-responsive border p-3 mb-4">
+                <h4 class="mb-3 text-center">Data CSV yang di Olah</h4>
+                <div class="data-preview mt-3">
+                    <div class="data-preview-csv table-responsive">
+                        @isset($csvData)
+                            @if(count($csvData) > 0)
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            @foreach(array_keys($csvData[0]) as $header)
+                                                <th>{{ $header }}</th>
+                                            @endforeach
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($csvData as $row)
+                                            <tr>
+                                                @foreach($row as $cell)
+                                                    <td>{{ $cell }}</td>
+                                                @endforeach
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @else
+                                <p>No data found in the CSV file.</p>
+                            @endif
+                        @endisset
+                    </div>
+                </div>
+            </div>
             <h3 class="mb-3 text-center">Result Feature Extraction</h3>
             <div class="button-action text-end mt-3">
                 <a href="/" class="btn btn-sm btn-warning">Back To Main Menu</a>

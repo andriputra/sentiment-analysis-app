@@ -13,14 +13,14 @@
         <div class="box">
             <div class="title-app text-center mb-4">
                 <h4>Data Model Sentiment</h4>
-                <h5>Pemilihan Umum Presiden dan Wakil Presiden Republik Indonesia</h5>
+                <h5>Pemilihan Umum Presiden Republik Indonesia</h5>
                 <h5>Periode 2024-2029</h5>
             </div>
             <hr>
             <div class="box-action d-flex justify-content-center gap-3">
-                <button class="btn btn-md btn-primary" id="button-1">Data Processing</button>
-                <button class="btn btn-md btn-warning" id="button-2" disabled>Feature Extraction</button>
-                <button class="btn btn-md btn-success" id="button-3" disabled>Classification</button>
+                <button class="btn btn-md btn-primary" id="button-1">Data Labeling</button>
+                <button class="btn btn-md btn-warning" id="button-2" >Feature Extraction</button>
+                <button class="btn btn-md btn-success" id="button-3" >Classification</button>
             </div>
         </div>
     </div>
@@ -62,42 +62,31 @@
             });
 
             $("#button-2").click(function(){
-                if ($(this).prop("disabled")) {
-                    showWarningModal("Data Processing belum diproses!");
-                } else {
-                    $.ajax({
-                        url: '/upload-feature-extraction',
-                        type: 'GET',
-                        success: function(response) {
-                            // Proses berhasil, aktifkan button-3
-                            $("#button-3").prop("disabled", false);
-                            window.open("/upload-feature-extraction", "_blank");
-                        },
-                        error: function() {
-                            // Tampilkan modal jika ada error
-                            showWarningModal("Terjadi kesalahan pada proses Feature Extraction!");
-                        }
-                    });
-                }
+                $.ajax({
+                    url: '/upload-feature-extraction',
+                    type: 'GET',
+                    success: function(response) {
+                        $("#button-3");
+                        window.open("/upload-feature-extraction", "_blank");
+                    },
+                    error: function() {
+                        // Tampilkan modal jika ada error
+                        showWarningModal("Terjadi kesalahan pada proses Feature Extraction!");
+                    }
+                });
             });
 
             $("#button-3").click(function(){
-                if ($(this).prop("disabled")) {
-                    showWarningModal("Feature Extraction belum diproses!");
-                } else {
-                    $.ajax({
-                        url: '/upload-data-classification',
-                        type: 'GET',
-                        success: function(response) {
-                            // Proses berhasil, arahkan ke URL
-                            window.open("/upload-feature-classification", "_blank");
-                        },
-                        error: function() {
-                            // Tampilkan modal jika ada error
-                            showWarningModal("Terjadi kesalahan pada proses Classification!");
-                        }
-                    });
-                }
+                $.ajax({
+                    url: '/upload-data-classification',
+                    type: 'GET',
+                    success: function(response) {
+                        window.open("/upload-data-classification", "_blank");
+                    },
+                    error: function() {
+                        showWarningModal("Terjadi kesalahan pada proses Classification!");
+                    }
+                });
             });
 
             function showWarningModal(message) {

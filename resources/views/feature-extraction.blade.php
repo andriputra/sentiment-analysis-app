@@ -13,7 +13,7 @@
         <div class="box">
             <div class="title-app text-center mb-4">
                 <h4>Data Model Sentiment</h4>
-                <h5>Pemilihan Umum Presiden dan Wakil Presiden Republik Indonesia</h5>
+                <h5>Pemilihan Umum Presiden Republik Indonesia</h5>
                 <h5>Periode 2024-2029</h5>
             </div>
             <hr>
@@ -27,11 +27,48 @@
             <div class="loader mt-3" id="loader"></div>
         </div>
     </div>
+
+    <!-- Modal error jika terjadi kesalahan pada skrip Python -->
+    <div class="modal fade" id="pythonErrorModal" tabindex="-1" aria-labelledby="pythonErrorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pythonErrorModalLabel">Error Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="pythonErrorText"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script>
         $(document).ready(function() {
-            $('#upload-form').submit(function() {
+            $('#upload-form').submit(function(event) {
                 $('#loader').show();
+                var maxFileSize = 6048 * 1024;
+                var fileSize = this['csv_file'].files[0].size;
+                if (fileSize > maxFileSize) {
+                    event.preventDefault();
+                    $('#loader').hide();
+                    $('#pythonErrorText').text('File size exceeds the limit (6 MB). Please upload a smaller file.');
+                    var errorModal = new bootstrap.Modal(document.getElementById('pythonErrorModal'));
+                    errorModal.show();
+                }
             });
+
+            // Tampilkan modal jika terjadi error dari skrip Python
+            @if (isset($error) && $error)
+                $(function() {
+                    $('#pythonErrorText').text('Sorry, your file uploaded not valid, please try again!');
+                    var pythonErrorModal = new bootstrap.Modal(document.getElementById('pythonErrorModal'));
+                    pythonErrorModal.show();
+                });
+            @endif
         });
     </script>
 </body>

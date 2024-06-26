@@ -13,7 +13,7 @@
         <div class="box">
             <div class="title-app text-center mb-4">
                 <h4>Data Model Sentiment</h4>
-                <h5>Pemilihan Umum Presiden dan Wakil Presiden Republik Indonesia</h5>
+                <h5>Pemilihan Umum Presiden Republik Indonesia</h5>
                 <h5>Periode 2024-2029</h5>
             </div>
             <hr>

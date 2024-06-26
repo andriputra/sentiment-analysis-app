@@ -6,7 +6,21 @@
     border-radius: 10px;
     border: 1px solid #d1d1d1;
 }
-
+.data-preview-csv{
+    height: 600px;
+}
+.data-preview-csv table tr th{
+    font-size: 14px;
+}
+.data-preview-csv table thead{
+    position: sticky;
+    top: 0px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #000000;
+}
+.data-preview-csv table tr td{
+    font-size: 12px;
+}
 .loader {
     border: 8px solid #f3f3f3;
     border-radius: 50%;
@@ -31,4 +45,10 @@
 }
 .box-result table{
     background-color: #ffffff;
+}
+
+table tr th,
+table tr td{
+    vertical-align: middle;
+    text-align: center;
 }
