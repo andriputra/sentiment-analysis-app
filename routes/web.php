@@ -5,6 +5,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SentimentController;
 use App\Http\Controllers\FeatureExtractionController;
 use App\Http\Controllers\ClassificationController;
+use App\Http\Controllers\PDFController;
+use App\Http\Controllers\ChartController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/upload', [SentimentController::class, 'showUploadForm']);

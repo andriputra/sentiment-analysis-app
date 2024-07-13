@@ -75,7 +75,7 @@ class FeatureExtractionController extends Controller
 
             // Check if the CSV data is empty
             if (empty($csvData)) {
-                return view('upload', ['error' => 'CSV file is empty or improperly formatted']);
+                return view('feature-extraction', ['error' => 'CSV file is empty or improperly formatted']);
             }
 
             return view('results_feature_extraction', ['results_feature_extraction' => $results_feature_extraction, 'csvData' => $csvData]);
@@ -83,7 +83,7 @@ class FeatureExtractionController extends Controller
         } catch (\Exception $e) {
             // Tangani kesalahan umum
             Log::error("Error in handleUpload: " . $e->getMessage());
-            return view('upload', ['error' => $e->getMessage()]);
+            return view('feature-extraction', ['error' => $e->getMessage()]);
         }
     }
 }
